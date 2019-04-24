@@ -1,0 +1,10 @@
+micronaut:
+  application:
+    name: nexus-stub
+endpoints:
+  all:
+    path: /
+nexusstub:
+  contextpath: /
+  xodus:
+    path: build/nexusstub-xodus-db
