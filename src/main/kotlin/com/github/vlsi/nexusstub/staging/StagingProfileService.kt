@@ -30,8 +30,8 @@ class StagingProfileService(
     fun deleteById(id: String) =
         XdStagingProfile.filter { it.id eq id }.firstOrNull()?.delete()
 
-    fun putById(id: String, profile: StagingProfile) =
-        XdStagingProfile.findOrNew { this.id = id }.apply {
+    fun put(profile: StagingProfile) =
+        XdStagingProfile.findOrNew { this.id = profile.id!! }.apply {
             name = profile.name
         }
 

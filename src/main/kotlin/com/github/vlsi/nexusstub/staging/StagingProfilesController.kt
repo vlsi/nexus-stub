@@ -30,9 +30,8 @@ class StagingProfilesController(
     @Transactional
     fun put(@PathVariable id: String, @RequestBody body: ProfileRequest) =
         ProfileResponse(
-            profiles.putById(
-                id,
-                body.data
+            profiles.put(
+                body.data.apply { this.id = id }
             ).toDto()
         )
 

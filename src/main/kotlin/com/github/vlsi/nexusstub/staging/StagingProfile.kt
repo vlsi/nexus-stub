@@ -6,19 +6,19 @@ import java.net.URI
 
 @JacksonXmlRootElement(localName = "stagingProfile")
 data class StagingProfile(
-    val resourceURI: URI? = null,
-    val id: String?, // It is optional for "create" requests
-    val name: String,
-    val repositoryTemplateId: String = "default_hosted_release",
-    val repositoryType: String = "maven2",
-    val repositoryTargetId: String = "",
-    val inProgress: Boolean = false,
-    val order: Int = 42,
-    val deployURI: URI? = null,
-    val targetGroups: List<String> = mutableListOf(),
-    val finishNotifyCreator: Boolean = true,
-    val promotionNotifyCreator: Boolean = true,
-    val dropNotifyCreator: Boolean = true,
-    val autoStagingDisabled: Boolean = false,
-    val repositoriesSearchable: Boolean = true
+    var resourceURI: URI? = null,
+    var id: String?, // It is optional for "create" requests
+    var name: String,
+    var repositoryTemplateId: String = "default_hosted_release",
+    var repositoryType: String = "maven2",
+    var repositoryTargetId: String = "",
+    var inProgress: Boolean = false,
+    var order: Int = 42,
+    var deployURI: URI? = null,
+    var targetGroups: List<String> = mutableListOf(),
+    var finishNotifyCreator: Boolean = true,
+    var promotionNotifyCreator: Boolean = true,
+    var dropNotifyCreator: Boolean = true,
+    var autoStagingDisabled: Boolean = false,
+    var repositoriesSearchable: Boolean = true
 )

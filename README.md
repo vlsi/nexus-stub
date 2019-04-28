@@ -10,6 +10,13 @@ Usage
 
 1. `./gradlew run` to start the application
 
+Environment variables
+---------------------
+
+* `GROUP_IDS=groupId[:profileId]` specifies the list of group ids to create default staging profiles for.
+Technically speaking, Nexus Pro creates a staging repository from a staging profile, so
+the profile is required. The profile can be added later by sending `PUT` request to `/service/local/staging/profiles/{id}`
+
 URLs
 ----
 
