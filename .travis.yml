@@ -1,0 +1,18 @@
+sudo: false
+language: java
+
+before_cache:
+  - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+cache:
+  directories:
+    - $HOME/.gradle/caches
+    - $HOME/.gradle/native
+    - $HOME/.gradle/wrapper
+
+script: ./gradlew jibDockerBuild
+
+deploy:
+  provider: script
+  script: bash docker_push.sh
+  on:
+    branch: springboot
