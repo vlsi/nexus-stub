@@ -1,5 +1,0 @@
-profile: service
-defaultPackage: com.github.vlsi.nexusstub
----
-testFramework: spek
-sourceLanguage: kotlin

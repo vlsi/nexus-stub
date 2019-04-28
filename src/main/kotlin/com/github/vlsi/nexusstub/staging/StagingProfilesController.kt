@@ -1,51 +1,53 @@
 package com.github.vlsi.nexusstub.staging
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper
-import io.micronaut.http.HttpHeaders
-import io.micronaut.http.HttpResponse
-import io.micronaut.http.MediaType
-import io.micronaut.http.annotation.*
+import com.github.vlsi.nexusstub.staging.store.toDto
+import com.github.vlsi.nexusstub.staging.store.toStagingPromote
+import org.springframework.http.MediaType
+import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.bind.annotation.*
 
-@Controller(
-    "\${nexusstub.contextpath}service/local/staging/profiles",
-    consumes = [MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON],
-    produces = [MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON]
+@RestController
+@RequestMapping(
+    "service/local/staging/profiles",
+    produces = [MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_XML_VALUE]
 )
 class StagingProfilesController(
-    private val profiles: StagingProfileRepository,
-    private val xmlMapper: XmlMapper
+    private val profiles: StagingProfileService
 ) {
-    fun <V> HttpHeaders.autodetectType(v: V) =
-        HttpResponse.ok(v)
-            .contentType(accept().first())
 
-    @Get("/")
-    fun index(headers: HttpHeaders) = headers.autodetectType(StagingProfiles().apply {
+    @GetMapping
+    @Transactional(readOnly = true)
+    fun profiles() = StagingProfiles().apply {
         data.addAll(profiles.findAll())
-    })
+    }
 
-    @Get("/{id}")
-    fun getProfile(id: String, headers: HttpHeaders) =
-        headers.autodetectType(ProfileResponse(profiles.findById(id)))
+    @GetMapping("/{id}")
+    @Transactional(readOnly = true)
+    fun get(@PathVariable id: String) =
+        ProfileResponse(profiles.findById(id)?.toDto())
 
-    @Put("/{id}")
-    fun putProfile(id: String, @Body body: ByteArray) =
-        ProfileResponse(
-            profiles.putById(
-                id,
-                xmlMapper.readValue(body, ProfileRequest::class.java).data
-            )
-        )
-
-    @Put("put2/{id}")
-    fun putProfile2(id: String, @Body body: ProfileRequest) =
+    @PutMapping("/{id}")
+    @Transactional
+    fun put(@PathVariable id: String, @RequestBody body: ProfileRequest) =
         ProfileResponse(
             profiles.putById(
                 id,
                 body.data
-            )
+            ).toDto()
         )
 
-    @Delete("/{id}")
-    fun deleteProfile(id: String) = profiles.deleteById(id)
+    @DeleteMapping("/{id}")
+    @Transactional
+    fun delete(@PathVariable id: String) = profiles.deleteById(id)
+
+    @PostMapping("/{id}/start")
+    @Transactional
+    fun start(@PathVariable id: String) =
+        StagingPromoteDto(
+            profiles.start(
+                id,
+                StagingPromoteDto(StagingPromote())
+            ).toStagingPromote()
+        )
+
 }

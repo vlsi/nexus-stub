@@ -23,6 +23,9 @@ Apache License 2.0
 Changelog
 ---------
 
+2019-04-28
+* Migrate Micronaut to SpringBoot
+
 2019-04-24
 * Micronaut-based implementation
 

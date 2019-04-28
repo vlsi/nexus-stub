@@ -1,55 +1,41 @@
 package com.github.vlsi.nexusstub.staging
 
-import com.github.vlsi.nexusstub.staging.store.XdStagingProfile
-import io.micronaut.context.annotation.Value
-import io.micronaut.http.server.HttpServerConfiguration
-import jetbrains.exodus.database.TransientEntityStore
-import kotlinx.dnq.creator.findOrNew
-import kotlinx.dnq.query.asSequence
-import kotlinx.dnq.query.filter
-import kotlinx.dnq.query.firstOrNull
-import java.net.URI
-import javax.inject.Singleton
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 
-@Singleton
+
+/**
+ * <stagingProfileRepository>
+<profileId>83a19ef842a1</profileId>
+<profileName>com.github.vlsi</profileName>
+<profileType>repository</profileType>
+<repositoryId>comgithubvlsi-1055</repositoryId>
+<type>open</type>
+<policy>release</policy>
+<userId>vladimirsitnikov</userId>
+<userAgent>okhttp/3.12.0</userAgent>
+<ipAddress>89.254.248.222</ipAddress>
+<repositoryURI>
+https://oss.sonatype.org/content/repositories/comgithubvlsi-1055
+</repositoryURI>
+<created>2019-04-21T18:50:51.953Z</created>
+<createdDate>Sun Apr 21 18:50:51 UTC 2019</createdDate>
+<createdTimestamp>1555872651953</createdTimestamp>
+<updated>2019-04-21T18:50:56.822Z</updated>
+<updatedDate>Sun Apr 21 18:50:56 UTC 2019</updatedDate>
+<updatedTimestamp>1555872656822</updatedTimestamp>
+<description>Explicitly created.</description>
+<provider>maven2</provider>
+<releaseRepositoryId>releases</releaseRepositoryId>
+<releaseRepositoryName>Releases</releaseRepositoryName>
+<notifications>0</notifications>
+<transitioning>false</transitioning>
+</stagingProfileRepository>
+ */
+@JacksonXmlRootElement(localName = "stagingProfileRepository")
 class StagingProfileRepository(
-    private val xodus: TransientEntityStore,
-    private val httpServer: HttpServerConfiguration,
-    @Value("\${nexusstub.contextpath}") private val contextPath: String
-) {
-    private val hostPort =
-        httpServer.run { host.orElse("127.0.0.1") + ":" + port.orElse(HttpServerConfiguration.DEFAULT_PORT) }
-
-    fun XdStagingProfile.toDto() =
-        StagingProfile(
-            id = id,
-            name = name,
-            resourceURI = URI.create("http://$hostPort/${contextPath}service/local/staging/profiles/$id")
-        )
-
-    fun findAll(): List<StagingProfile> =
-        xodus.transactional(readonly = true) {
-            XdStagingProfile.all().asSequence()
-                .map {
-                    it.toDto()
-                }
-                .toList()
-        }
-
-    fun findById(id: String) =
-        xodus.transactional(readonly = true) {
-            XdStagingProfile.filter { it.id eq id }.firstOrNull()?.toDto()
-        }
-
-    fun deleteById(id: String) =
-        xodus.transactional(readonly = true) {
-            XdStagingProfile.filter { it.id eq id }.firstOrNull()?.delete()
-        }
-
-    fun putById(id: String, profile: StagingProfile) =
-        xodus.transactional {
-            XdStagingProfile.findOrNew { this.id = id }.apply {
-                name = profile.name
-            }.toDto()
-        }
-}
+    val profileId: String,
+    val profileName: String,
+    val repositoryId: String,
+    val type: String,
+    val transitioning: Boolean = false
+)

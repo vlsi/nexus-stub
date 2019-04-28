@@ -1,14 +1,11 @@
 package com.github.vlsi.nexusstub
 
-import io.micronaut.runtime.Micronaut
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.runApplication
 
-object Application {
+@SpringBootApplication
+class Application
 
-    @JvmStatic
-    fun main(args: Array<String>) {
-        Micronaut.build()
-            .packages("com.github.vlsi.nexusstub")
-            .mainClass(Application.javaClass)
-            .start()
-    }
+fun main(args: Array<String>) {
+    runApplication<Application>(*args)
 }
