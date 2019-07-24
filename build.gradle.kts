@@ -1,10 +1,10 @@
 plugins {
     java
-    kotlin("jvm") version "1.3.21"
-    kotlin("plugin.spring") version "1.3.21"
+    kotlin("jvm") version "1.3.40"
+    kotlin("plugin.spring") version "1.3.40"
     // Don't apply the plugin only when explicitly asked
-    id("org.springframework.boot") version "2.1.4.RELEASE"
-    id("com.google.cloud.tools.jib") version "1.1.2"
+    id("org.springframework.boot") version "2.1.6.RELEASE"
+    id("com.google.cloud.tools.jib") version "1.4.0"
 }
 
 version = "0.1"
