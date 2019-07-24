@@ -9,6 +9,7 @@ class XdRepositoryState(entity: Entity) : XdEnumEntity(entity) {
     companion object : XdEnumEntityType<XdRepositoryState>() {
         val OPEN by enumField { presentation = "open" }
         val CLOSED by enumField { presentation = "closed" }
+        val RELEASED by enumField { presentation = "released" }
     }
 
     var presentation by xdRequiredStringProp()

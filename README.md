@@ -29,6 +29,8 @@ Apache License 2.0
 
 Changelog
 ---------
+2019-07-24
+* Add service/local/staging/bulk/promote API
 
 2019-04-28
 * Migrate Micronaut to SpringBoot
