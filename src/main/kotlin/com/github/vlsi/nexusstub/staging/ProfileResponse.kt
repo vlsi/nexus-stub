@@ -7,4 +7,8 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 class ProfileResponse(
     @JacksonXmlProperty(localName = "data")
     val data: StagingProfile?
-)
+) {
+    override fun toString(): String {
+        return "ProfileResponse(data=$data)"
+    }
+}

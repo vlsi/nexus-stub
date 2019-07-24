@@ -32,7 +32,7 @@ https://oss.sonatype.org/content/repositories/comgithubvlsi-1055
 </stagingProfileRepository>
  */
 @JacksonXmlRootElement(localName = "stagingProfileRepository")
-class StagingProfileRepository(
+data class StagingProfileRepository(
     val profileId: String,
     val profileName: String,
     val repositoryId: String,

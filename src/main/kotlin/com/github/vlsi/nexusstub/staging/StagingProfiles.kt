@@ -9,4 +9,8 @@ class StagingProfiles {
     @JacksonXmlElementWrapper(localName = "data")
     @JacksonXmlProperty(localName = "stagingProfile")
     val data = mutableListOf<StagingProfile>()
+
+    override fun toString(): String {
+        return "StagingProfiles(data=$data)"
+    }
 }

@@ -7,10 +7,14 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 class StagingBulkDto(
     @JacksonXmlProperty(localName = "data")
     val data: StagingBulk
-)
+) {
+    override fun toString(): String {
+        return "StagingBulkDto(data=$data)"
+    }
+}
 
 @JacksonXmlRootElement(localName = "stagingBulk")
-class StagingBulk(
+data class StagingBulk(
     val stagedRepositoryIds: Array<String> = arrayOf(),
     val description: String? = ""
 )
