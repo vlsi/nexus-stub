@@ -52,6 +52,7 @@ dependencies {
     testCompile("org.jetbrains.spek:spek-api:1.1.5")
     testRuntime("org.junit.jupiter:junit-jupiter-engine")
     testRuntime("org.jetbrains.spek:spek-junit-platform-engine:1.1.5")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 // use JUnit 5 platform

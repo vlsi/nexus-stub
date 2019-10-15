@@ -1,5 +1,6 @@
 package com.github.vlsi.nexusstub
 
+import com.github.vlsi.nexusstub.staging.store.XdArtifact
 import com.github.vlsi.nexusstub.staging.store.XdRepositoryState
 import com.github.vlsi.nexusstub.staging.store.XdStagingProfile
 import com.github.vlsi.nexusstub.staging.store.XdStagingRepository
@@ -17,7 +18,7 @@ import java.io.File
 class XodusStore {
     @Bean
     fun xodus(@Value("\${nexusstub.xodus.path:build/nexusstub-xodus-db}") path: String): TransientEntityStore {
-        XdModel.registerNodes(XdStagingProfile, XdStagingRepository, XdRepositoryState)
+        XdModel.registerNodes(XdStagingProfile, XdStagingRepository, XdRepositoryState, XdArtifact)
         val xodusStore = StaticStoreContainer.init(
             dbFolder = File(path),
             environmentName = "db"
