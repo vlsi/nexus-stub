@@ -7,7 +7,7 @@ plugins {
     id("com.google.cloud.tools.jib") version "1.4.0"
 }
 
-version = "0.1"
+version = "1.0"
 group = "com.github.vlsi.nexusstub"
 
 repositories {
@@ -23,7 +23,11 @@ jib {
     }
     to {
         image = "vlsi/nexus-stub"
-        tags = setOf("latest")
+        tags = if (findProperty("release") != null) setOf("latest", "v$version") else setOf("latest")
+        auth {
+            username = findProperty("docker.username").toString()
+            password = findProperty("docker.password").toString()
+        }
     }
 }
 
