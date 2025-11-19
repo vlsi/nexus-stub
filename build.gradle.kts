@@ -1,84 +1,107 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     java
-    kotlin("jvm") version "1.3.40"
-    kotlin("plugin.spring") version "1.3.40"
+    kotlin("jvm") version "2.2.21"
+    kotlin("plugin.spring") version "2.2.21"
     // Don't apply the plugin only when explicitly asked
-    id("org.springframework.boot") version "2.1.6.RELEASE"
-    id("com.google.cloud.tools.jib") version "1.4.0"
+    id("org.springframework.boot") version "3.5.7"
+    id("com.google.cloud.tools.jib") version "3.5.0"
 }
 
-version = "1.0"
+version = "2.0.0"
 group = "com.github.vlsi.nexusstub"
 
 repositories {
-    jcenter()
+    mavenCentral()
+}
+
+dependencies {
+    implementation(platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES))
+    implementation(kotlin("reflect"))
+    implementation(kotlin("stdlib"))
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework:spring-tx")
+
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+
+    implementation("org.jetbrains.xodus:xodus-openAPI:2.0.1")
+    implementation("org.jetbrains.xodus:xodus-environment:2.0.1")
+    implementation("org.jetbrains.xodus:xodus-entity-store:2.0.1")
+    implementation("org.jetbrains.xodus:xodus-vfs:2.0.1")
+    implementation("org.jetbrains.xodus:dnq:2.0.0")
+
+    runtimeOnly("ch.qos.logback:logback-classic")
+    runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation("org.jetbrains.spek:spek-api:1.1.5")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testRuntimeOnly("org.jetbrains.spek:spek-junit-platform-engine:1.1.5")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 jib {
+    from {
+        // Explicitly specify base image - use a multi-arch compatible base
+        image = "gcr.io/distroless/java21-debian12"
+        // Multi-arch platforms for registry builds
+        // Note: jibDockerBuild ignores this and uses native architecture
+        platforms {
+            platform {
+                architecture = "amd64"
+                os = "linux"
+            }
+            platform {
+                architecture = "arm64"
+                os = "linux"
+            }
+        }
+    }
     container {
-        jvmFlags = listOf("-Xms128m")
+        jvmFlags = listOf(
+            "-Xms128m",
+            "-Xmx512m",  // Set max heap size
+            "-XX:+UseContainerSupport",  // Better container resource awareness
+            "-XX:MaxRAMPercentage=75.0"  // Use up to 75% of container memory
+        )
         mainClass = "com.github.vlsi.nexusstub.ApplicationKt"
-        args = listOf()
         ports = listOf("8080/tcp")
+        creationTime = "USE_CURRENT_TIMESTAMP"  // Better for reproducible builds
     }
     to {
         image = "vlsi/nexus-stub"
-        tags = if (findProperty("release") != null) setOf("latest", "v$version") else setOf("latest")
+        tags =
+            version.toString().split('.')
+                .runningReduceIndexed { index, acc, part ->
+                    if (index == 0) part else "$acc.$part"
+                }.mapTo(mutableSetOf()) { "v$it" }
         auth {
-            username = findProperty("docker.username").toString()
-            password = findProperty("docker.password").toString()
+            // Only set credentials if properties exist
+            setUsername(providers.gradleProperty("docker.username"))
+            setPassword(providers.gradleProperty("docker.password"))
         }
     }
 }
 
+val jvmTargetRelease = 21;
 
-dependencies {
-    compile(platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES))
-    compile(kotlin("reflect"))
-    compile(kotlin("stdlib"))
-    compile("org.springframework.boot:spring-boot-starter-web")
-    compile("org.springframework:spring-tx")
-    compile("javax.annotation:javax.annotation-api")
+tasks.withType<JavaCompile>().configureEach {
+    options.release.set(jvmTargetRelease)
+}
 
-    compile("com.fasterxml.jackson.dataformat:jackson-dataformat-xml")
-    compile("com.fasterxml.jackson.module:jackson-module-kotlin")
-
-    compile("org.jetbrains.xodus:xodus-openAPI:1.3.0")
-    compile("org.jetbrains.xodus:xodus-environment:1.3.0")
-    compile("org.jetbrains.xodus:xodus-entity-store:1.3.0")
-    compile("org.jetbrains.xodus:xodus-vfs:1.3.0")
-    compile("org.jetbrains.xodus:dnq:1.3.424")
-
-    runtime("ch.qos.logback:logback-classic")
-    runtime("com.fasterxml.jackson.module:jackson-module-kotlin")
-
-    testCompile("org.junit.jupiter:junit-jupiter-api")
-    testCompile("org.jetbrains.spek:spek-api:1.1.5")
-    testRuntime("org.junit.jupiter:junit-jupiter-engine")
-    testRuntime("org.jetbrains.spek:spek-junit-platform-engine:1.1.5")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.fromTarget(jvmTargetRelease.toString())
+        javaParameters = true
+        freeCompilerArgs.add("-Xjdk-release=$jvmTargetRelease")
+        freeCompilerArgs.add("-Xannotation-default-target=param-property")
+    }
 }
 
 // use JUnit 5 platform
 tasks.test {
     useJUnitPlatform()
-}
-
-tasks.test {
-    useJUnitPlatform()
-}
-
-tasks.compileKotlin {
-	kotlinOptions {
-	    jvmTarget = "1.8"
-	    //Will retain parameter names for Java reflection
-	    javaParameters = true
-	}
-}
-
-tasks.compileTestKotlin {
-	kotlinOptions {
-	    jvmTarget = "1.8"
-	    javaParameters = true
-	}
 }

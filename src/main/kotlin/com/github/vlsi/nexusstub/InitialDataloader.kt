@@ -2,10 +2,10 @@ package com.github.vlsi.nexusstub
 
 import com.github.vlsi.nexusstub.staging.StagingProfile
 import com.github.vlsi.nexusstub.staging.StagingProfileService
+import jakarta.annotation.PostConstruct
 import jetbrains.exodus.database.TransientEntityStore
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
-import javax.annotation.PostConstruct
 
 @Component
 class InitialDataloader(

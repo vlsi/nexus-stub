@@ -2,7 +2,7 @@ package com.github.vlsi.nexusstub.staging.store
 
 import jetbrains.exodus.entitystore.Entity
 import kotlinx.dnq.XdEnumEntity
-import kotlinx.dnq.enum.XdEnumEntityType
+import kotlinx.dnq.XdEnumEntityType
 import kotlinx.dnq.xdRequiredStringProp
 
 class XdRepositoryState(entity: Entity) : XdEnumEntity(entity) {

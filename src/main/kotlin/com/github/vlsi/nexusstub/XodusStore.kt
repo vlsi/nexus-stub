@@ -21,7 +21,7 @@ class XodusStore {
         XdModel.registerNodes(XdStagingProfile, XdStagingRepository, XdRepositoryState, XdArtifact)
         val xodusStore = StaticStoreContainer.init(
             dbFolder = File(path),
-            environmentName = "db"
+            entityStoreName = "db"
         )
         initMetaData(XdModel.hierarchy, xodusStore)
         return xodusStore

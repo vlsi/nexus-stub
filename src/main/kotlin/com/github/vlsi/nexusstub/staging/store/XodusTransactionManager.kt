@@ -20,7 +20,7 @@ class XodusTransactionManager(
         }
     }
 
-    override fun doSuspend(transaction: Any) = xodus.suspendThreadSession()
+    override fun doSuspend(transaction: Any) = xodus.suspendThreadSession()!!
 
     override fun doResume(transaction: Any?, suspendedResources: Any) {
         xodus.resumeSession(suspendedResources as TransientStoreSession)
